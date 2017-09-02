@@ -1,0 +1,54 @@
+{
+  "name": "realizee",
+  "version": "0.0.1",
+  "license": "MIT",
+  "contributors": [
+    {
+      "name": "Kamil Mielnik",
+      "email": "kamil.adam.mielnik@gmail.com",
+      "url": "https://kamilmielnik.github.io/"
+    },
+    {
+      "name": "Yuriy Yakym",
+      "email": "yakym.yuriy@gmail.com"
+    }
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/realizee/realizee.git"
+  },
+  "bugs": {
+    "url": "https://github.com/realizee/realizee/issues"
+  },
+  "homepage": "https://github.com/realizee/realizee#readme",
+  "main": "index.js",
+  "scripts": {
+    "start": "better-npm-run start",
+    "test": "better-npm-run test"
+  },
+  "betterScripts": {
+    "start": {
+      "command": "b index.js",
+      "env": {
+        "NODE_ENV": "development"
+      }
+    },
+    "test": {
+      "command": "jest",
+      "env": {
+        "NODE_ENV": "test"
+      }
+    }
+  },
+  "devDependencies": {
+    "babel-core": "^6.26.0",
+    "babel-preset-es2015": "^6.24.1",
+    "babel-preset-react": "^6.24.1",
+    "babel-preset-stage-1": "^6.24.1",
+    "better-npm-run": "^0.1.0",
+    "jest": "^20.0.4"
+  },
+  "dependencies": {
+    "react": "^15.6.1"
+  }
+}
