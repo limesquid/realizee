@@ -1,11 +1,11 @@
 import { ViewModel } from 'realizee';
+import { getAll } from '../../todo/src/api';
 
 export default ViewModel((counterModel) => ({
   state: {
     counter: counterModel.counter,
-    valueFromPromise: new Promise((resolve) => {
-      setTimeout(() => resolve('Value from promise'), 1000);
-    }),
+    todos: getAll()
+      .then(todos => todos.map(({ text }) => text)),
     valuesFromGeneratorFn: function* () {
       for(let i = 1; i <= 10; i++) {
         yield i;

@@ -3,7 +3,7 @@ import React from 'react';
 const CounterView = ({
   counter,
   even,
-  valueFromPromise,
+  todos = [],
   valuesFromGenerator,
   valuesFromGeneratorFn,
   onClick
@@ -13,7 +13,14 @@ const CounterView = ({
 
     <div>{even ? 'Even' : 'Odd'}</div>
 
-    <div>{valueFromPromise}</div>
+    <div>
+      Todos:
+      {todos.map(value => (
+        <span key={value} style={{ marginLeft: '10px' }}>
+          {value}
+        </span>
+      ))}
+    </div>
 
     <div>
       Values from generator:
