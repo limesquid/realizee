@@ -1,7 +1,7 @@
 import { Model } from 'realizee';
 
 export default Model({
-  counter: 0,
+  counter: 1,
   increase() {
     this.counter++;
   }
