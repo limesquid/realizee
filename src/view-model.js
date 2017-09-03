@@ -3,7 +3,6 @@ import { isFunction, isPromise, isGeneratorFn, isIterable } from './utils';
 
 export default function ViewModel(config) {
   const getConfig = isFunction(config) ? config : () => config;
-
   return (View) => {
     class RealizeeComponent extends PureComponent {
       constructor(props, ...restArguments) {
