@@ -1,3 +1,3 @@
-export default function Model() {
-  return () => ({});
+export default function Model(model) {
+  return () => model;
 }
