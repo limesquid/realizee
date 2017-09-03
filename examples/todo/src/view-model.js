@@ -1,14 +1,17 @@
 import { ViewModel } from 'realizee';
-import { getAll, toggleDone } from './api';
+import { toggleDone } from './api';
 
 export default ViewModel((model) => ({
   state: {
-    todos: getAll() // TODO: change to "model.todos"
+    todos: model.todos
   },
   lifecycle: {
     componentWillMount() {
       console.log('componentWillMount');
       model.loadData();
+    },
+    componentDidMount() {
+      console.log('componentDidMount');
     }
   },
   handlers: {

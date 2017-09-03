@@ -1,3 +1,8 @@
+export const bindHandlers = (context, handlers = {}) => Object.keys(handlers).reduce((bound, key) => {
+  bound[key] = handlers[key].bind(context);
+  return bound;
+}, {});
+
 export const isFunction = (subject) => typeof subject === 'function';
 
 export const isGenerator = (subject) => subject && isFunction(subject.next) && isFunction(subject.throw);

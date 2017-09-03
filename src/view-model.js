@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { isFunction, isGeneratorFunction, isIterable, isPromise } from './utils';
+import { bindHandlers, isFunction, isGeneratorFunction, isIterable, isPromise } from './utils';
 
 export default function ViewModel(config) {
   const getConfig = isFunction(config) ? config : () => config;
@@ -8,8 +8,8 @@ export default function ViewModel(config) {
     class RealizeeComponent extends PureComponent {
       constructor(props, ...restArguments) {
         super(props, ...restArguments);
-        this.state = manageState(props.config.state, this.setState.bind(this));
         Object.assign(RealizeeComponent.prototype, props.config.lifecycle || {})
+        this.state = manageState(props.config.state, this.setState.bind(this));
         this.handlers = bindHandlers(this, props.config.handlers);
       }
 
@@ -58,8 +58,3 @@ const handlePromise = (state, property, setState) => {
 const handleGenerator = (state, property) => Array.from(state[property]());
 
 const handleIterable = (state, property) => Array.from(state[property]);
-
-const bindHandlers = (context, handlers = {}) => Object.keys(handlers).reduce((bound, key) => {
-  bound[key] = handlers[key].bind(context);
-  return bound;
-}, {});
