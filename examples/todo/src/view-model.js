@@ -12,6 +12,9 @@ export default ViewModel((model) => ({
     }
   },
   handlers: {
-    onTodoClick: (id) => toggleDone(id)
+    onTodoClick: (id) => {
+      console.log('onTodoClick', id);
+      toggleDone(id);
+    }
   }
 }));

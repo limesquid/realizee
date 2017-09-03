@@ -2,7 +2,8 @@ import React from 'react';
 
 const todoStyle = {
   display: 'flex',
-  marginLeft: 10
+  marginLeft: 10,
+  cursor: 'pointer'
 };
 
 const TodosView = ({ todos = [], onTodoClick }) => (
