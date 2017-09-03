@@ -4,7 +4,8 @@ const createTodo = (text, done = false) => ({ id: id++, text, done });
 let id = 0;
 let todos = [
   createTodo('First todo'),
-  createTodo('Second todo')
+  createTodo('Second todo', true),
+  createTodo('Third todo')
 ];
 
 export const getAll = () => promisify(() => todos);
