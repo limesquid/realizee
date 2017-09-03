@@ -1,6 +1,5 @@
-import CounterModel from './model';
-import CounterView from './view';
-import CounterViewModel from './view-model';
+import React from 'react';
+import Counter from './counter';
 
-const counterModel = CounterModel();
-export default CounterViewModel(CounterView)(counterModel);
+const rootElement = document.getElementById('app');
+ReactDOM.render(<Counter />, rootElement);
