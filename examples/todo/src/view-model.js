@@ -1,13 +1,13 @@
 import { ViewModel } from 'realizee';
 
-export default ViewModel((model) => ({
+export default ViewModel((todos) => ({
   state: {
-    todos: model
+    todos
   },
   lifecycle: {
-    componentWillMount: () => model.load()
+    componentWillMount: () => todos.load()
   },
   handlers: {
-    onTodoClick: (id) => model.toggleDone(id)
+    onTodoClick: (id) => todos.toggleDone(id)
   }
 }));
