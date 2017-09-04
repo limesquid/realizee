@@ -55,7 +55,7 @@ const manageStateProperty = (state, property, setState) => {
     }));
   }
 
-  return model;
+  return value;
 };
 
 const handlePromise = (state, property, setState) => {

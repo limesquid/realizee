@@ -8,7 +8,6 @@ const todoStyle = {
 
 const TodosView = ({ todos: { entries = [] }, onTodoClick }) => (
   <div>
-    Todos:
     {entries.map(({ id, text, done }) => (
       <div key={id} style={todoStyle} onClick={() => onTodoClick(id)}>
         {`${done ? '✓' : '✕'} ${text}`}
