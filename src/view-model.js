@@ -46,7 +46,16 @@ const manageStateProperty = (state, property, setState) => {
     return handleGenerator(state, property);
   }
 
-  return value;
+  if(value.subscribe) {
+    const model = value;
+    model.subscribe((key, value) => setState({
+      [property]: {
+        ...model
+      }
+    }));
+  }
+
+  return model;
 };
 
 const handlePromise = (state, property, setState) => {

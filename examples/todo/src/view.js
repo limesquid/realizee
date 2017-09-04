@@ -6,10 +6,10 @@ const todoStyle = {
   cursor: 'pointer'
 };
 
-const TodosView = ({ todos = [], onTodoClick }) => (
+const TodosView = ({ todos: { entries = [] }, onTodoClick }) => (
   <div>
     Todos:
-    {todos.map(({ id, text, done }) => (
+    {entries.map(({ id, text, done }) => (
       <div key={id} style={todoStyle} onClick={() => onTodoClick(id)}>
         {`${done ? '✓' : '✕'} ${text}`}
       </div>

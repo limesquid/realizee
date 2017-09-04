@@ -1,15 +1,27 @@
 import { bindHandlers, isFunction } from './utils';
 
+const watchers = Symbol('watchers');
+
 export default function Model(model) {
   const createModel = isFunction(model) ? model : () => model;
 
   return (...parameters) => {
     const model = createModel(...parameters);
     const { attributes, functions } = extractAttributesAndFunctions(model);
-    const enhancedModel = {};
-    Object.assign(enhancedModel, attributes, functions);
-    bindHandlers(enhancedModel, functions)
-    return enhancedModel;
+    Object.assign(model, attributes, functions);
+    bindHandlers(model, functions);
+    const proxy = new Proxy(model, {
+      set(target, key, value, res) {
+        target[key] = value;
+        Array.from(proxy[watchers]).forEach((watcher) => watcher(key, value));
+        return true;
+      }
+    });
+    proxy[watchers] = new Set();
+    proxy.subscribe = function(watcher) {
+      proxy[watchers].add(watcher);
+    };
+    return proxy;
   };
 }
 

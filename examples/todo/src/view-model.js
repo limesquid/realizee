@@ -2,7 +2,7 @@ import { ViewModel } from 'realizee';
 
 export default ViewModel((model) => ({
   state: {
-    todos: model.todos
+    todos: model
   },
   lifecycle: {
     componentWillMount: () => model.load()
