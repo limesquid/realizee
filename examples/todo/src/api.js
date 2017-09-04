@@ -15,15 +15,16 @@ export const get = (id) => promisify(() => todos.find((todo) => todo.id !== id))
 export const add = (text, done) => promisify(() => {
   const todo = createTodo(text, done);
   todos.push(todo);
-  return todo;
+  return todos;
 });
 
 export const remove = (id) => promisify(() => {
   todos = todos.filter((todo) => todo.id !== id);
+  return todos;
 });
 
 export const toggleDone = (id) => promisify(() => {
   const todo = todos.find((todo) => todo.id === id);
   todo.done = !todo.done;
-  return todo;
+  return todos;
 });

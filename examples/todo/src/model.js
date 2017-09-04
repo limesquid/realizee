@@ -1,9 +1,12 @@
 import { Model } from 'realizee';
-import { getAll } from './api';
+import { getAll, toggleDone } from './api';
 
 export default Model((todos = []) => ({
   todos,
-  async loadData() {
+  async load() {
     this.todos = await getAll();
+  },
+  async toggleDone(id) {
+    this.todos = await toggleDone(id);
   }
 }));
