@@ -1,6 +1,5 @@
+import { modelSymbol, subscribeSymbol, watchersSymbol } from './constants';
 import { bindHandlers, isFunction } from './utils';
-
-const watchers = Symbol('watchers');
 
 export default function Model(model) {
   const createModel = isFunction(model) ? model : () => model;
@@ -13,13 +12,14 @@ export default function Model(model) {
     const proxy = new Proxy(model, {
       set(target, key, value, res) {
         target[key] = value;
-        Array.from(proxy[watchers]).forEach((watcher) => watcher(key, value));
+        Array.from(proxy[watchersSymbol]).forEach((watcher) => watcher(key, value));
         return true;
       }
     });
-    proxy[watchers] = new Set();
-    proxy.subscribe = function(watcher) {
-      proxy[watchers].add(watcher);
+    proxy[watchersSymbol] = new Set();
+    proxy[modelSymbol] = true;
+    proxy[subscribeSymbol] = (watcher) => {
+      proxy[watchersSymbol].add(watcher);
     };
     return proxy;
   };

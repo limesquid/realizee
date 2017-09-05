@@ -1,3 +1,5 @@
+import { modelSymbol } from './constants';
+
 export const bindHandlers = (context, handlers = {}) => Object.keys(handlers).reduce((bound, key) => {
   bound[key] = handlers[key].bind(context);
   return bound;
@@ -12,3 +14,5 @@ export const isGeneratorFunction = (subject) => isFunction(subject) && subject.c
 export const isIterable = (subject) => Boolean(subject[Symbol.iterator]);
 
 export const isPromise = (subject) => Promise.resolve(subject) === subject;
+
+export const isModel = (subject) => Boolean(subject[modelSymbol]);

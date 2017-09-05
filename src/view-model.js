@@ -1,5 +1,13 @@
 import React, { PureComponent } from 'react';
-import { bindHandlers, isFunction, isGeneratorFunction, isIterable, isPromise } from './utils';
+import { subscribeSymbol } from './constants';
+import {
+  bindHandlers,
+  isFunction,
+  isGeneratorFunction,
+  isIterable,
+  isModel,
+  isPromise
+} from './utils';
 
 export default function ViewModel(config) {
   const getConfig = isFunction(config) ? config : () => config;
@@ -37,35 +45,52 @@ const manageStateProperty = (state, property, setState) => {
   const value = state[property];
 
   if(isPromise(value)) {
-    return handlePromise(state, property, setState);
+    return handlePromise(value, property, setState);
   }
 
   if(isIterable(value)) {
-    return handleIterable(state, property);
+    return handleIterable(value, property);
   }
 
   if(isGeneratorFunction(value)) {
-    return handleGenerator(state, property);
+    return handleGenerator(value, property);
   }
 
-  if(value.subscribe) {
-    const model = value;
-    model.subscribe((key, value) => setState({
-      [property]: {
-        ...model
-      }
-    }));
+  if(isModel(value)) {
+    return handleModel(value, property, setState);
   }
 
   return value;
 };
 
-const handlePromise = (state, property, setState) => {
-  const promise = state[property];
+const handlePromise = (promise, property, setState) => {
   promise.then((value) => setState({ [property]: value }));
-  return undefined; // TODO: ?
+  return undefined;
 };
 
-const handleGenerator = (state, property) => Array.from(state[property]());
+const handleGenerator = (generator) => Array.from(generator());
 
-const handleIterable = (state, property) => Array.from(state[property]);
+const handleIterable = (iterable) => Array.from(iterable);
+
+const handleModel = (model, property, setState) => {
+  // TODO: check for memory leaks
+  const watchedProperties = [];
+
+  model[subscribeSymbol]((key, value) => {
+    if(watchedProperties.includes(key)) {
+      setState({
+        [property]: {
+          ...model,
+          [key]: value
+        }
+      });
+    }
+  });
+
+  return new Proxy(model, {
+    get(target, key, receiver) {
+      watchedProperties.push(key);
+      return target[key];
+    }
+  });
+};
