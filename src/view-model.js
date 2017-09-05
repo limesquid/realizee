@@ -8,20 +8,22 @@ export default function ViewModel(config) {
     class RealizeeComponent extends PureComponent {
       constructor(props, ...restArguments) {
         super(props, ...restArguments);
-        Object.assign(RealizeeComponent.prototype, props.config.lifecycle || {})
-        this.state = manageState(props.config.state, this.setState.bind(this));
-        this.handlers = bindHandlers(this, props.config.handlers);
+        const bindings = props.realizeeBindings;
+        Object.assign(RealizeeComponent.prototype, bindings.lifecycle || {})
+        this.state = manageState(bindings.state, this.setState.bind(this));
+        this.handlers = bindHandlers(this, bindings.handlers);
       }
 
       render() {
+        // TODO: omit `realizeeBindings` in this.props
         return (
-          <View {...this.state} {...this.handlers} />
+          <View {...this.props} {...this.state} {...this.handlers} />
         );
       }
     };
 
     return (...models) => () => (
-      <RealizeeComponent config={getConfig(...models)} />
+      <RealizeeComponent realizeeBindings={getConfig(...models)} />
     );
   };
 }
