@@ -1,4 +1,9 @@
-import { modelSymbol, subscribeSymbol, watchersSymbol } from './constants';
+import {
+  modelSymbol,
+  subscribeSymbol,
+  unsubscribeSymbol,
+  watchersSymbol
+} from './constants';
 import { bindHandlers, isFunction } from './utils';
 
 export default function Model(model) {
@@ -20,6 +25,9 @@ export default function Model(model) {
     proxy[modelSymbol] = true;
     proxy[subscribeSymbol] = (watcher) => {
       proxy[watchersSymbol].add(watcher);
+    };
+    proxy[unsubscribeSymbol] = (watcher) => {
+      proxy[watchersSymbol].delete(watcher);
     };
     return proxy;
   };

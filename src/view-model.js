@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { subscribeSymbol } from './constants';
+import { subscribeSymbol, unsubscribeSymbol } from './constants';
 import {
   bindHandlers,
   isFunction,
@@ -8,6 +8,8 @@ import {
   isModel,
   isPromise
 } from './utils';
+
+const proxyWatchers = new WeakMap();
 
 export default function ViewModel(config) {
   const getConfig = isFunction(config) ? config : () => config;
@@ -22,10 +24,41 @@ export default function ViewModel(config) {
         this.handlers = bindHandlers(this, bindings.handlers);
       }
 
+      componentWillUnmount() {
+        Object.values(this.state).forEach((value) => {
+          if(isModel(value)) {
+            const watcher = proxyWatchers[value];
+            value[unsubscribeSymbol](watcher);
+          }
+        });
+      }
+
       render() {
         // TODO: omit `realizeeBindings` in this.props
+        // TODO: move and refactor computing computed properties to separate file + willReceiveProps
+        const { computed, state } = this.props.realizeeBindings;
+        const computedValues = Object.keys(computed).reduce((result, key) => {
+          result[key] = computed[key].call(new Proxy({
+            ...state,
+            ...computed,
+            ...result
+          }, {
+            get(target, key, receiver) {
+              if(isFunction(target[key])) {
+                return computed[key].call(receiver);
+              }
+              return target[key];
+            }
+          }));
+          return result;
+        }, {});
+
         return (
-          <View {...this.props} {...this.state} {...this.handlers} />
+          <View
+            {...this.props}
+            {...this.state}
+            {...computedValues}
+            {...this.handlers} />
         );
       }
     };
@@ -76,7 +109,14 @@ const handleModel = (model, property, setState) => {
   // TODO: check for memory leaks
   const watchedProperties = [];
 
-  model[subscribeSymbol]((key, value) => {
+  const proxy = new Proxy(model, {
+    get(target, key, receiver) {
+      watchedProperties.push(key);
+      return target[key];
+    }
+  });
+
+  const watcher = (key, value) => {
     if(watchedProperties.includes(key)) {
       setState({
         [property]: {
@@ -85,12 +125,10 @@ const handleModel = (model, property, setState) => {
         }
       });
     }
-  });
+  };
 
-  return new Proxy(model, {
-    get(target, key, receiver) {
-      watchedProperties.push(key);
-      return target[key];
-    }
-  });
+  proxyWatchers.set(proxy, watcher);
+  model[subscribeSymbol](watcher);
+
+  return proxy;
 };

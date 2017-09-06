@@ -6,8 +6,10 @@ const todoStyle = {
   cursor: 'pointer'
 };
 
-const TodosView = ({ todos: { entries = [] }, onTodoClick }) => (
+const TodosView = ({ todos: { entries = [] }, uncompletedCount, completedCount, onTodoClick }) => (
   <div>
+    {completedCount}-
+    {uncompletedCount}
     {entries.map(({ id, text, done }) => (
       <div key={id} style={todoStyle} onClick={() => onTodoClick(id)}>
         {`${done ? '✓' : '✕'} ${text}`}
